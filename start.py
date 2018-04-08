@@ -11,13 +11,20 @@ def start():
     cf.read(os.path.join(base_dir,'nlc.conf'))
     nginx_conf_path = cf.get('nginx','path')
     time_interval = cf.get('nlc','time_interval')
+    failed_time = cf.get('nlc','failed_time')
     send_url = cf.get('nlc','send_url')
     header = {"Content-Type": "application/json;charset=utf-8"}
 
     while True:
         logobj = logCat(nginx_conf_path)
         data = logobj.run_all()
-        response = requests.post(send_url,data = json.dumps(data),headers=header) 
+        while True:
+            try: 
+                response = requests.post(send_url,data = json.dumps(data),headers=header)
+                break 
+            except:
+                time.sleep(float(failed_time))
+                continue
         time.sleep(float(time_interval))
 
 if __name__ == '__main__':
