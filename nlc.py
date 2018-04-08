@@ -140,16 +140,17 @@ class logCat(logBase):
         #判断日志是否已轮询
         mydate = datetime.now()
         date_str = mydate.strftime('%Y%m%d')
-        target_file = log_file + '-' + date_str + '.gz'
-        if not os.path.exists(target_file):
-            for item in os.listdir(config_dir):
-                if tag_file == item:
-                #if log_file == item:
-                    tmpfile = os.path.join(config_dir,item)
-                    logging.info("remove tag file: " + tag_file)
-                    os.remove(tmpfile)
-                else:
-                    continue
+       # target_file = log_file + '-' + date_str + '.gz'
+       # if not os.path.exists(target_file):
+       #     for item in os.listdir(config_dir):
+       #         if tag_file == item:
+       #         #if log_file == item:
+       #             tmpfile = os.path.join(config_dir,item)
+       #             logging.info("remove tag file: " + tag_file)
+       #             os.remove(tmpfile)
+       #         else:
+       #             continue
+
         #判断是否第一次读取
         if os.path.exists(config_file):
             cf = open(config_file,'r')
@@ -169,6 +170,14 @@ class logCat(logBase):
         if curr_seek == f.tell():
             f.close()
             return None
+        elif curr_seek >= f.tell():
+            for item in os.listdir(config_dir):
+               if tag_file == item:
+                   tmpfile = os.path.join(config_dir,item)
+                   os.remove(tmpfile)
+                   logging.info("remove tag file: " + tag_file)
+                   return None 
+               else:continue
 
         f.seek(curr_seek)
 
