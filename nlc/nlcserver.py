@@ -107,14 +107,15 @@ def nlc():
             m.uv = it['uv'] + m.uv
             curr_stat = json.loads(m.state)
             t_stat = it['status']
-            mystat = {}
-            for stat,value in curr_stat.items():
-                if t_stat.has_key(stat):
-                    value = t_stat[stat] + value
+            mystat = curr_stat
+            #for stat,value in curr_stat.items():
+            for stat,value in t_stat.items():
+                if curr_stat.has_key(stat):
+                    value = curr_stat[stat] + value
                     mystat[stat] = value
                 else:
                     mystat[stat] = value
-            m.state = json.dumps(mystat) 
+            m.state = json.dumps(mystat)
         db.session.commit()
     return jsonify({'success':True})
 
